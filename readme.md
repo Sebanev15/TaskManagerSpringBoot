@@ -20,4 +20,22 @@ REST API for task management built with Spring Boot.
 - Full API documentation via Swagger UI
 
 ## Getting Started
-_Instructions will be added as the project progresses._
+
+### Prerequisites
+- Java 21
+- Docker Desktop
+
+### Run locally
+1. Clone the repository
+```bash
+   git clone https://github.com/Sebanev15/TaskManagerSpringBoot.git
+```
+2. Start the database
+```bash
+   docker compose up -d
+```
+3. Run the application from IntelliJ or with:
+```bash
+   ./mvnw spring-boot:run
+```
+4. App available at `http://localhost:8081`
