@@ -3,7 +3,7 @@
 REST API for task management built with Spring Boot.
 
 ## Tech Stack
-- Java 21 + Spring Boot 3
+- Java 21 + Spring Boot 4.0.6
 - Spring Security + JWT
 - PostgreSQL
 - Docker + Docker Compose
@@ -18,6 +18,18 @@ REST API for task management built with Spring Boot.
 - Create, update, delete and filter tasks
 - Pagination and status filtering
 - Full API documentation via Swagger UI
+
+## Structure
+- `src/main/java/sebanev15/taskmanager/controller` — REST controllers
+- `src/main/java/sebanev15/taskmanager/dto` — data transfer objects
+- `src/main/java/sebanev15/taskmanager/model` — entity classes
+- `src/main/java/sebanev15/taskmanager/repository` — data access layer
+- `src/main/java/sebanev15/taskmanager/security` — security configuration and JWT utilities
+- `src/main/java/sebanev15/taskmanager/service` — business logic
+
+## Model
+- User: id, username, email, created_at, tasks (list of owned tasks)
+- Task: id, title, description, status (TODO, IN_PROGRESS, DONE), priority (LOW, MEDIUM, HIGH), created_at, due_date, user_id(owner)
 
 ## Getting Started
 
