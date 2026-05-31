@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   datasource:
     url: jdbc:postgresql://localhost:5433/taskmanagerdb
     username: taskuser
@@ -8,10 +10,21 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: http://localhost:8083/auth/realms/baeldung
+            jwk-set-uri: http://localhost:8083/auth/realms/baeldung/protocol/openid-connect/certs
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+jwt:
+  secret: ${jwt.secret}
+  expiration: 86400000
 
 server:
   port: 8081

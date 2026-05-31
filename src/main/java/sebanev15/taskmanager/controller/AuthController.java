@@ -21,8 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public User loginUser(@RequestBody LoginRequestDto loginRequest) {
-        //TODO implementar login con JWT
+    public String loginUser(@RequestBody LoginRequestDto loginRequest) {
         return userService.loginUser(loginRequest);
     }
 

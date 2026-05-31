@@ -1,24 +1,22 @@
 package sebanev15.taskmanager.service;
 
-import jakarta.validation.ConstraintViolation;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sebanev15.taskmanager.dto.LoginRequestDto;
 import sebanev15.taskmanager.dto.RegisterRequestDto;
 import sebanev15.taskmanager.mapper.UserMapper;
 import sebanev15.taskmanager.model.User;
 import sebanev15.taskmanager.repository.UserRepository;
-
-import javax.xml.validation.Validator;
-import java.util.Set;
+import sebanev15.taskmanager.security.JwtService;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final JwtService jwtService;
 
     public String registerUser(RegisterRequestDto registerRequest){
         if(userRepository.existsByEmail(registerRequest.getEmail())){
@@ -31,16 +29,15 @@ public class UserService {
         }
     }
 
-    public User loginUser(LoginRequestDto loginRequest) {
+    public String loginUser(LoginRequestDto loginRequest) {
         if (userRepository.existsByEmail(loginRequest.getEmail())) {
             User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
             if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
-                //TODO generar JWT token
-                return user;
+                return jwtService.generateToken(user);
             } else {;
-                return null; // Invalid password
+                throw new RuntimeException("Invalid credentials");
             }
         }
-        return null;
+        throw new RuntimeException("User not found");
     }
 }
