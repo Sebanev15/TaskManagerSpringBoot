@@ -25,10 +25,11 @@ REST API for task management built with Spring Boot.
 - User login with JWT token generation
 - PostgreSQL persistence
 - Dockerized local database setup
+- Create tasks
 
 ### Planned
 
-- Create, update, delete and filter tasks
+- update, delete and filter tasks
 - Pagination and status filtering
 - Full API documentation via Swagger UI
 
@@ -140,6 +141,38 @@ Invalid credentials
 User not found
 ```
 
+### TaskController
+
+#### Create Task
+- **Endpoint:** `POST /tasks/create`
+
+**Request body**
+
+```json
+{
+  "title": "Finish project",
+  "description": "Complete the task manager API",
+  "priority": "HIGH",
+  "dueDate": "2026-07-01"
+}
+```
+*Notes*: 
+- `status` is not included in the request body as it defaults to `TODO` when creating a new task.
+- The `dueDate` field is optional; if not provided, it will be set to `null`.
+- The `user_id` is not included in the request body as it is determined from the authenticated user context. If the user is not authenticated, the request will be rejected.
+
+**Current response**
+- Returns a plain string message with the created task's title
+- Example
+
+```text
+Task created successfully: Finish project
+```
+
+**Invalid credentials and invalid token**
+
+It not returns a message, but the request will be rejected with a 403 Forbidden status code if the user is not authenticated or if it missed a necessary camp.
+
 ## Example curl requests
 
 ### Register
@@ -156,6 +189,14 @@ curl -X POST http://localhost:8081/auth/register ^
 curl -X POST http://localhost:8081/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"email\":\"john@example.com\",\"password\":\"secret123\"}"
+```
+
+### Create Task
+
+```powershellcurl -X POST http://localhost:8081/tasks/create ^
+  -H "Content-Type: application/json" ^
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." ^
+  -d "{\"title\":\"Finish project\",\"description\":\"Complete the task manager API\",\"priority\":\"HIGH\",\"dueDate\":\"2026-07-01\"}"
 ```
 
 ## Getting Started

@@ -12,7 +12,6 @@ import sebanev15.taskmanager.service.UserService;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final UserService userService;
 
     @PostMapping("/register")
