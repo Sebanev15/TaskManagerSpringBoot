@@ -19,17 +19,17 @@ REST API for task management built with Spring Boot.
 
 ## Features
 
-### Done
+### Done ✅
 
 - User registration with JWT backend structure
 - User login with JWT token generation
 - PostgreSQL persistence
 - Dockerized local database setup
-- Create tasks
+- Create, read, update, delete tasks
+- Task status management
 
-### Planned
+### Planned 🚧
 
-- update, delete and filter tasks
 - Pagination and status filtering
 - Full API documentation via Swagger UI
 
@@ -144,7 +144,7 @@ User not found
 ### TaskController
 
 #### Create Task
-- **Endpoint:** `POST /tasks/create`
+- **Endpoint:** `POST /tasks`
 
 **Request body**
 
@@ -153,50 +153,151 @@ User not found
   "title": "Finish project",
   "description": "Complete the task manager API",
   "priority": "HIGH",
-  "dueDate": "2026-07-01"
+  "dueDate": "2026-07-01",
+  "status": "TODO"
 }
 ```
-*Notes*: 
-- `status` is not included in the request body as it defaults to `TODO` when creating a new task.
-- The `dueDate` field is optional; if not provided, it will be set to `null`.
-- The `user_id` is not included in the request body as it is determined from the authenticated user context. If the user is not authenticated, the request will be rejected.
 
-**Current response**
-- Returns a plain string message with the created task's title
-- Example
+**Notes:** 
+- `status` is optional — defaults to `TODO` if not provided
+- `dueDate` is optional
+- `description` is optional
+- Requires JWT authentication
+
+**Response**
 
 ```text
 Task created successfully: Finish project
 ```
 
-**Invalid credentials and invalid token**
+#### Get All Tasks
+- **Endpoint:** `GET /tasks`
 
-It not returns a message, but the request will be rejected with a 403 Forbidden status code if the user is not authenticated or if it missed a necessary camp.
+**Headers**
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Response**
+
+```json
+[
+  {
+    "title": "Finish project",
+    "description": "Complete the task manager API",
+    "status": "TODO",
+    "priority": "HIGH",
+    "dueDate": "2026-07-01",
+    "createdAt": "2026-05-29T14:41:39"
+  }
+]
+```
+
+#### Update Task
+- **Endpoint:** `PUT /tasks/{id}`
+
+**Request body**
+
+```json
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "priority": "MEDIUM",
+  "dueDate": "2026-08-01",
+  "status": "IN_PROGRESS"
+}
+```
+
+**Response**
+
+```text
+Task updated successfully: {id}
+```
+
+#### Delete Task
+- **Endpoint:** `DELETE /tasks/{id}`
+
+**Response**
+
+```text
+Task deleted successfully: {id}
+```
+
+#### Update Task Status
+- **Endpoint:** `PATCH /tasks/{id}/status`
+
+**Request body**
+
+```json
+{
+  "status": "DONE"
+}
+```
+
+**Response**
+
+```text
+Task status updated successfully: {id}
+```
 
 ## Example curl requests
 
 ### Register
 
 ```powershell
-curl -X POST http://localhost:8081/auth/register ^
-  -H "Content-Type: application/json" ^
+curl -X POST http://localhost:8081/auth/register `
+  -H "Content-Type: application/json" `
   -d "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"password\":\"secret123\"}"
 ```
 
 ### Login
 
 ```powershell
-curl -X POST http://localhost:8081/auth/login ^
-  -H "Content-Type: application/json" ^
+curl -X POST http://localhost:8081/auth/login `
+  -H "Content-Type: application/json" `
   -d "{\"email\":\"john@example.com\",\"password\":\"secret123\"}"
 ```
 
 ### Create Task
 
-```powershellcurl -X POST http://localhost:8081/tasks/create ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." ^
+```powershell
+curl -X POST http://localhost:8081/tasks `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." `
   -d "{\"title\":\"Finish project\",\"description\":\"Complete the task manager API\",\"priority\":\"HIGH\",\"dueDate\":\"2026-07-01\"}"
+```
+
+### Get All Tasks
+
+```powershell
+curl -X GET http://localhost:8081/tasks `
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."
+```
+
+### Update Task
+
+```powershell
+curl -X PUT http://localhost:8081/tasks/1 `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." `
+  -d "{\"title\":\"Updated title\",\"description\":\"Updated description\",\"priority\":\"MEDIUM\",\"dueDate\":\"2026-08-01\",\"status\":\"IN_PROGRESS\"}"
+```
+
+### Delete Task
+
+```powershell
+curl -X DELETE http://localhost:8081/tasks/1 `
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."
+```
+
+### Update Task Status
+
+```powershell
+curl -X PATCH http://localhost:8081/tasks/1/status `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." `
+  -d "{\"status\":\"DONE\"}"
 ```
 
 ## Getting Started

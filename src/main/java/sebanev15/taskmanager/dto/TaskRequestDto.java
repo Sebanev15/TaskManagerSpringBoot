@@ -13,4 +13,5 @@ public class TaskRequestDto {
     private String description;
     private TaskPriority priority;
     private LocalDate dueDate;
+    private TaskStatus status;
 }
