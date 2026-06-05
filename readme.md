@@ -27,10 +27,9 @@ REST API for task management built with Spring Boot.
 - Dockerized local database setup
 - Create, read, update, delete tasks
 - Task status management
+- Pagination and status filtering
 
 ### Planned 🚧
-
-- Pagination and status filtering
 - Full API documentation via Swagger UI
 
 ## Possible future features

@@ -1,17 +1,20 @@
 package sebanev15.taskmanager.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sebanev15.taskmanager.dto.TaskRequestDto;
 import sebanev15.taskmanager.dto.TaskResponseDto;
 import sebanev15.taskmanager.dto.TaskStatusUpdateDto;
 import sebanev15.taskmanager.mapper.TaskMapper;
 import sebanev15.taskmanager.model.Task;
+import sebanev15.taskmanager.model.TaskPriority;
+import sebanev15.taskmanager.model.TaskStatus;
 import sebanev15.taskmanager.model.User;
 import sebanev15.taskmanager.repository.TaskRepository;
 import sebanev15.taskmanager.repository.UserRepository;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +30,10 @@ public class TaskService {
         return "Task created successfully: " + taskRequest.getTitle();
     }
 
-    public List<TaskResponseDto> getTasksForUser(String email) {
+    public Page<TaskResponseDto> getTasksForUser(String email, TaskStatus taskStatus, TaskPriority taskPriority, Pageable pageable) {
         User user = getAuthenticatedUser(email);
-        return taskMapper.toResponseDto(taskRepository.findByUser(user));
+        Page<Task>tasks =taskRepository.findByUserWithFilters(user, taskStatus, taskPriority, pageable);
+        return tasks.map(taskMapper::toResponseDto);
     }
 
     public String updateTask(Long id, TaskRequestDto taskRequest, String email) {

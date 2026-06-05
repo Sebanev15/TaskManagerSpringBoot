@@ -1,13 +1,17 @@
 package sebanev15.taskmanager.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import sebanev15.taskmanager.dto.TaskRequestDto;
 import sebanev15.taskmanager.dto.TaskResponseDto;
 import sebanev15.taskmanager.dto.TaskStatusUpdateDto;
-import sebanev15.taskmanager.model.Task;
+import sebanev15.taskmanager.model.TaskPriority;
+import sebanev15.taskmanager.model.TaskStatus;
 import sebanev15.taskmanager.service.TaskService;
+
 
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +29,10 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponseDto> getTasks(){
-        return taskService.getTasksForUser(Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal().toString());
+    public Page<TaskResponseDto> getTasks( Pageable pageable,
+                                         @RequestParam(required = false) TaskStatus taskStatus,
+                                         @RequestParam(required = false) TaskPriority taskPriority) {
+        return taskService.getTasksForUser(Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal().toString(), taskStatus, taskPriority, pageable);
     }
 
     @PutMapping("/{id}")
