@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sebanev15.taskmanager.dto.LoginRequestDto;
 import sebanev15.taskmanager.dto.RegisterRequestDto;
+import sebanev15.taskmanager.exception.DuplicateResourceException;
+import sebanev15.taskmanager.exception.InvalidCredentialsException;
+import sebanev15.taskmanager.exception.ResourceNotFoundException;
 import sebanev15.taskmanager.mapper.UserMapper;
 import sebanev15.taskmanager.model.User;
 import sebanev15.taskmanager.repository.UserRepository;
@@ -20,7 +23,7 @@ public class UserService {
 
     public String registerUser(RegisterRequestDto registerRequest){
         if(userRepository.existsByEmail(registerRequest.getEmail())){
-            return "Email already exists";
+            throw new DuplicateResourceException("Email already in use");
         }else{
             User user = userMapper.toUser(registerRequest);
             //TODO hashear el password con bcrypt
@@ -35,9 +38,9 @@ public class UserService {
             if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
                 return jwtService.generateToken(user);
             } else {;
-                throw new RuntimeException("Invalid credentials");
+                throw new InvalidCredentialsException("Invalid credentials");
             }
         }
-        throw new RuntimeException("User not found");
+        throw new ResourceNotFoundException("User not found");
     }
 }

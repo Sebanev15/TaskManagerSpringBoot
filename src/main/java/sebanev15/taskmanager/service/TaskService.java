@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import sebanev15.taskmanager.dto.TaskRequestDto;
 import sebanev15.taskmanager.dto.TaskResponseDto;
 import sebanev15.taskmanager.dto.TaskStatusUpdateDto;
+import sebanev15.taskmanager.exception.ResourceNotFoundException;
+import sebanev15.taskmanager.exception.UnauthorizedException;
 import sebanev15.taskmanager.mapper.TaskMapper;
 import sebanev15.taskmanager.model.Task;
 import sebanev15.taskmanager.model.TaskPriority;
@@ -37,7 +39,7 @@ public class TaskService {
     }
 
     public String updateTask(Long id, TaskRequestDto taskRequest, String email) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         if(task.getUser().getEmail().equals(email)){
             task.setTitle(taskRequest.getTitle());
@@ -48,29 +50,29 @@ public class TaskService {
             taskRepository.save(task);
             return "Task updated successfully: " + id;
         }
-        return "User does not have permission to update this task";
+        throw new UnauthorizedException("User does not have permission to update this task");
     }
 
     public String deleteTask(Long id, String email){
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         if(task.getUser().getEmail().equals(email)){
             taskRepository.delete(task);
             return "Task deleted successfully: " + id;
         }
-        return "User does not have permission to delete this task";
+        throw new UnauthorizedException("User does not have permission to delete this task");
     }
 
     public String modifyTaskStatus(Long id, TaskStatusUpdateDto taskStatusUpdate, String email){
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         if(task.getUser().getEmail().equals(email)) {
             task.setStatus(taskStatusUpdate.getStatus());
             taskRepository.save(task);
             return "Task status updated successfully: " + id;
         }
-        return "User does not have permission to update this task";
+        throw new UnauthorizedException("User does not have permission to modify this task");
     }
 
     private User getAuthenticatedUser(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
