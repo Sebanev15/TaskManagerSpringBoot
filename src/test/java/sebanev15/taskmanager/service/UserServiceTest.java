@@ -1,13 +1,11 @@
 package sebanev15.taskmanager.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import sebanev15.taskmanager.dto.LoginRequestDto;
 import sebanev15.taskmanager.dto.RegisterRequestDto;
 import sebanev15.taskmanager.exception.DuplicateResourceException;
