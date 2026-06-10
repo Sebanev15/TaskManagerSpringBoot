@@ -24,12 +24,11 @@ public class UserService {
     public String registerUser(RegisterRequestDto registerRequest){
         if(userRepository.existsByEmail(registerRequest.getEmail())){
             throw new DuplicateResourceException("Email already in use");
-        }else{
-            User user = userMapper.toUser(registerRequest);
-            //TODO hashear el password con bcrypt
-            userRepository.save(user);
-            return "User registered successfully: " + registerRequest.getName();
         }
+        User user = userMapper.toUser(registerRequest);
+        //TODO hashear el password con bcrypt
+        userRepository.save(user);
+        return "User registered successfully: " + registerRequest.getName();
     }
 
     public String loginUser(LoginRequestDto loginRequest) {
