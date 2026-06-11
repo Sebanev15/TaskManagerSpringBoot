@@ -3,6 +3,11 @@
 
 REST API for task management built with Spring Boot.
 
+## Live Demo
+API deployed at: https://taskmanager-api-71h9.onrender.com
+
+Swagger UI: https://taskmanager-api-71h9.onrender.com/swagger-ui/index.html
+
 ## Tech Stack
 
 - Java 21
