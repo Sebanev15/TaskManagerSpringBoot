@@ -1,4 +1,5 @@
 # Task Manager API
+[![CI](https://github.com/Sebanev15/TaskManagerSpringBoot/actions/workflows/ci.yml/badge.svg)](https://github.com/Sebanev15/TaskManagerSpringBoot/actions/workflows/ci.yml)
 
 REST API for task management built with Spring Boot.
 
