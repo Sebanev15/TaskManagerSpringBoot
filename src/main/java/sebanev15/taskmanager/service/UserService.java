@@ -1,7 +1,7 @@
 package sebanev15.taskmanager.service;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sebanev15.taskmanager.dto.LoginRequestDto;
 import sebanev15.taskmanager.dto.RegisterRequestDto;
@@ -20,13 +20,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     public String registerUser(RegisterRequestDto registerRequest){
         if(userRepository.existsByEmail(registerRequest.getEmail())){
             throw new DuplicateResourceException("Email already in use");
         }
         User user = userMapper.toUser(registerRequest);
-        //TODO hashear el password con bcrypt
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully: " + registerRequest.getName();
     }
@@ -34,9 +35,9 @@ public class UserService {
     public String loginUser(LoginRequestDto loginRequest) {
         if (userRepository.existsByEmail(loginRequest.getEmail())) {
             User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-            if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
+            if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                 return jwtService.generateToken(user);
-            } else {;
+            } else {
                 throw new InvalidCredentialsException("Invalid credentials");
             }
         }
