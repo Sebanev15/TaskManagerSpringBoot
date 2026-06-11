@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sebanev15.taskmanager.dto.LoginRequestDto;
 import sebanev15.taskmanager.dto.RegisterRequestDto;
 import sebanev15.taskmanager.exception.DuplicateResourceException;
@@ -31,7 +32,8 @@ public class UserServiceTest {
     private UserMapper userMapper;
     @Mock
     private JwtService jwtService;
-
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
     private UserService userService;
 
@@ -60,6 +62,7 @@ public class UserServiceTest {
     public void registerMailNotExists(){
         when(userRepository.existsByEmail("test@gmail.com")).thenReturn(false);
         when(userMapper.toUser(registerRequestDto)).thenReturn(new User());
+        when(passwordEncoder.encode(any())).thenReturn("hashedPassword");
 
         userService.registerUser(registerRequestDto);
 
@@ -75,6 +78,7 @@ public class UserServiceTest {
         when(userRepository.existsByEmail("test@gmail.com")).thenReturn(true);
         when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("fake-jwt-token");
+        when(passwordEncoder.matches("password123", "password123")).thenReturn(true);
 
         String token = userService.loginUser(loginRequestDto);
 
@@ -99,6 +103,7 @@ public class UserServiceTest {
 
         when(userRepository.existsByEmail("test@gmail.com")).thenReturn(true);
         when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("password123", "wrongpassword")).thenReturn(false);
 
         Throwable throwable = assertThrows(InvalidCredentialsException.class, () -> userService.loginUser(loginRequestDto));
 
