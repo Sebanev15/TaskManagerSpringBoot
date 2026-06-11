@@ -28,8 +28,6 @@ REST API for task management built with Spring Boot.
 - Create, read, update, delete tasks
 - Task status management
 - Pagination and filtering for tasks
-
-### Planned 🚧
 - Full API documentation via Swagger UI
 
 ## Possible future features
